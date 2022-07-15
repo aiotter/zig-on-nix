@@ -1,0 +1,56 @@
+{ lib
+, fetchFromGitHub
+, cmake
+, llvmPackages_13
+, libxml2
+, zlib
+, stdenv
+}:
+
+let
+  llvmPackages = llvmPackages_13;
+in
+stdenv.mkDerivation rec {
+  pname = "zig";
+  version = "0.9.1";
+
+  src = fetchFromGitHub {
+    owner = "ziglang";
+    repo = pname;
+    rev = version;
+    hash = "sha256-x2c4c9RSrNWGqEngio4ArW7dJjW0gg+8nqBwPcR721k=";
+  };
+
+  nativeBuildInputs = [
+    cmake
+    llvmPackages.llvm.dev
+  ];
+
+  buildInputs = [
+    libxml2
+    zlib
+  ] ++ (with llvmPackages; [
+    libclang
+    lld
+    llvm
+  ]);
+
+  preBuild = ''
+    export HOME=$TMPDIR;
+  '';
+
+  doCheck = true;
+  checkPhase = ''
+    runHook preCheck
+    ./zig test --cache-dir "$TMPDIR" -I $src/test $src/test/behavior.zig
+    runHook postCheck
+  '';
+
+  meta = with lib; {
+    homepage = "https://ziglang.org/";
+    description =
+      "General-purpose programming language and toolchain for maintaining robust, optimal, and reusable software";
+    license = licenses.mit;
+    platforms = platforms.unix;
+  };
+}
