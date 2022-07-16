@@ -20,8 +20,8 @@
   } // flake-utils.lib.eachDefaultSystem (system:
     let pkgs = import nixpkgs { inherit system; overlays = [ self.overlays.default ]; }; in
     rec {
-      packages.default = packages."0.9.1";
-      packages."0.9.1" = pkgs.zig;
+      packages.default = packages.${pkgs.zig.version};
+      packages.${pkgs.zig.version} = pkgs.zig;
 
       packages.latest =
         (pkgs.zig.override { llvmPackages = pkgs.llvmPackages_14; })
