@@ -1,0 +1,50 @@
+name: Update flake.nix for latest branch
+
+on:
+  workflow_dispatch:
+  workflow_call:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  update:
+    name: Update flake
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: cachix/install-nix-action@v15
+      - run: patch flake.nix latest.patch
+      - run: nix flake update
+      - run: nix flake check
+      - name: Set outputs
+        id: outputs
+        run: |
+          echo -n '::set-output name=flake::'
+          cat flake.nix | awk 1 ORS='\\n'
+          echo
+          echo -n '::set-output name=flake_lock::'
+          cat flake.lock | awk 1 ORS='\\n'
+          echo
+    outputs:
+      flake: ${{ steps.outputs.outputs.flake }}
+      flake_lock: ${{ steps.outputs.outputs.flake_lock }}
+
+  push:
+    name: Push updated files
+    needs: update
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Commit to refs/heads/latest
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git checkout -B latest
+          echo -ne '${{ needs.update.outputs.flake }}' >flake.nix
+          echo -ne '${{ needs.update.outputs.flake_lock }}' >flake.lock
+          git add flake.nix flake.lock
+          git commit -m "[CI] Generate flake"
+          git push -f origin latest

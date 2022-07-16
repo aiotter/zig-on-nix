@@ -1,0 +1,4 @@
+23c23
+<       packages.default = packages.${pkgs.zig.version};
+---
+>       packages.default = packages.latest;
