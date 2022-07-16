@@ -7,7 +7,7 @@ let
     name = "zig-darwin-overlay";
     url = "https://github.com/aiotter/zig-darwin-overlay";
     ref = "refs/heads/master";
-    rev = "185422382716191d685a803fa37bb91b89ddb2fc";
+    rev = "77ed354573fb164641c7240906988a3786d82b43";
   });
 in
 import <nixpkgs> { overlays = [ zig-overlay ]; }
@@ -21,7 +21,7 @@ let
     name = "zig-darwin-overlay";
     url = "https://github.com/aiotter/zig-darwin-overlay";
     ref = "refs/heads/master";
-    rev = "185422382716191d685a803fa37bb91b89ddb2fc";
+    rev = "77ed354573fb164641c7240906988a3786d82b43";
   });
 in
 {
@@ -34,12 +34,14 @@ in
 
 ### flake
 ```bash
-$ nix build github:aiotter/zig-darwin-overlay
+# Install/Run latest stable version of zig
+$ nix profile install github:aiotter/zig-darwin-overlay
 $ nix run github:aiotter/zig-darwin-overlay
 
-# Open nix-shell with LLVM14 and other dependencies installed
-$ nix develop github:aiotter/zig-darwin-overlay
+# Install/Run master branch of zig
+$ nix profile install 'github:aiotter/zig-darwin-overlay#latest'
+$ nix run 'github:aiotter/zig-darwin-overlay#latest'
 
-# With LLVM13 installed (for zig v0.9.1)
-$ nix develop 'github:aiotter/zig-darwin-overlay#llvm13'
+# Prepare buidling environment for zig
+$ nix develop 'github:aiotter/zig-darwin-overlay#latest'
 ```
