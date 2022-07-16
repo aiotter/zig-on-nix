@@ -1,15 +1,12 @@
 { lib
 , fetchFromGitHub
 , cmake
-, llvmPackages_13
+, llvmPackages
 , libxml2
 , zlib
 , stdenv
 }:
 
-let
-  llvmPackages = llvmPackages_13;
-in
 stdenv.mkDerivation rec {
   pname = "zig";
   version = "0.9.1";
