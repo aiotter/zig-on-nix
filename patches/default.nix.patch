@@ -1,4 +1,4 @@
-13c13
-<   zig = callPackage ./zig.nix { llvmPackages = super.llvmPackages_13; };
+7c7
+<   zig = flake.packages.${builtins.currentSystem}.default;
 ---
->   zig = callPackage ./zig.nix { llvmPackages = super.llvmPackages_14; };
+>   zig = flake.packages.${builtins.currentSystem}.latest;
