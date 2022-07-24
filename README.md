@@ -1,47 +1,45 @@
-# Nix overlay/flake for building zig on macOS
+# Nix overlay/flake for building latest zig
 ## Usage
 ### Standalone
 ```nix
 let
   zig-overlay = import (builtins.fetchGit {
     name = "zig-darwin";
-    url = "https://github.com/aiotter/zig-darwin-overlay";
-    ref = "refs/heads/master";
-    rev = "77ed354573fb164641c7240906988a3786d82b43";
+    url = "https://github.com/aiotter/zig-on-nix";
+    ref = "refs/heads/latest";
+    rev = "242757ed1f85f44539b8afc7c4bfdb6b5b8aed06";
   });
 in
 import <nixpkgs> { overlays = [ zig-overlay ]; }
 ```
 
-### nix-darwin
+### configuration.nix
 ```nix
 { config, pkgs, ... }:
 let
   zig-overlay = import (builtins.fetchGit {
     name = "zig-darwin";
-    url = "https://github.com/aiotter/zig-darwin-overlay";
-    ref = "refs/heads/master";
-    rev = "77ed354573fb164641c7240906988a3786d82b43";
+    url = "https://github.com/aiotter/zig-on-nix";
+    ref = "refs/heads/latest";
+    rev = "242757ed1f85f44539b8afc7c4bfdb6b5b8aed06";
   });
 in
 {
   nixpkgs.overlays = [ zig-overlay ];
-  environment.systemPackages = [
-    pkgs.zig
-  ];
+  environment.systemPackages = [ pkgs.zig ];
 }
 ```
 
 ### flake
 ```bash
 # Install/Run latest stable version of zig
-$ nix profile install github:aiotter/zig-darwin
-$ nix run github:aiotter/zig-darwin
+$ nix profile install github:aiotter/zig-on-nix
+$ nix run github:aiotter/zig-on-nix
 
 # Install/Run master branch of zig
-$ nix profile install 'github:aiotter/zig-darwin#latest'
-$ nix run 'github:aiotter/zig-darwin#latest'
+$ nix profile install 'github:aiotter/zig-on-nix#latest'
+$ nix run 'github:aiotter/zig-on-nix#latest'
 
-# Prepare buidling environment for zig
-$ nix develop 'github:aiotter/zig-darwin#latest'
+# Prepare buiding environment for zig
+$ nix develop 'github:aiotter/zig-on-nix#latest'
 ```
