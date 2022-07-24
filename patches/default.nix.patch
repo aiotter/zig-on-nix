@@ -1,0 +1,4 @@
+13c13
+<   zig = callPackage ./zig.nix { llvmPackages = super.llvmPackages_13; };
+---
+>   zig = callPackage ./zig.nix { llvmPackages = super.llvmPackages_14; };
