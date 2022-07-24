@@ -10,5 +10,5 @@ let
   callPackage = if super.stdenv.isDarwin then nixpkgs.darwin.apple_sdk_11_0.callPackage else super.callPackage;
 in
 {
-  zig = callPackage ./zig.nix { llvmPackages = super.llvmPackages13; };
+  zig = callPackage ./zig.nix { llvmPackages = super.llvmPackages_13; };
 }
