@@ -5,36 +5,33 @@
     nixpkgs.url = "nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
     zig = {
-      url = "github:ziglang/zig";
+      url = "github:ziglang/zig/master";
       flake = false;
     };
   };
 
-  outputs = { self, nixpkgs, flake-utils, zig }: {
-    overlays.default = final: prev: {
-      zig = prev.callPackage ./zig.nix { 
-        stdenv = if prev.stdenv.isDarwin then prev.darwin.apple_sdk_11_0.stdenv else prev.stdenv;
-        llvmPackages = prev.llvmPackages_13;
-      };
-    };
-  } // flake-utils.lib.eachDefaultSystem (system:
-    let pkgs = import nixpkgs { inherit system; overlays = [ self.overlays.default ]; }; in
-    rec {
+  outputs = { self, nixpkgs, flake-utils, zig }:
+    flake-utils.lib.eachDefaultSystem (system:
+    let pkgs = import nixpkgs { inherit system; }; in rec {
       packages.default = packages.${pkgs.zig.version};
       packages.${pkgs.zig.version} = pkgs.zig;
 
       packages.latest =
         (pkgs.zig.override { llvmPackages = pkgs.llvmPackages_14; })
-        .overrideAttrs (_: {
-          version = "latest";
-          src = pkgs.fetchgit {
-            url = "https://github.com/ziglang/zig";
+        .overrideAttrs (previousAttrs: rec {
+          version = "0.9.1-dev.nix+${zig.shortRev}";
+          src = pkgs.fetchFromGitHub {
+            owner = "ziglang";
+            repo = "zig";
             rev = zig.rev;
-            sha256 = zig.narHash;
+            hash = zig.narHash;
           };
-          # https://github.com/ziglang/zig/issues/12069
-          cmakeFlags = [ "-DZIG_STATIC_ZLIB=on" ];
+
+          cmakeFlags = [
+            # https://github.com/ziglang/zig/issues/12069
+            "-DZIG_STATIC_ZLIB=on"
+            "-DZIG_VERSION=${version}"
+          ];
         });
-    }
-  );
+    });
 }
