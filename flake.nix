@@ -20,13 +20,7 @@
         (pkgs.zig.override { llvmPackages = pkgs.llvmPackages_14; })
         .overrideAttrs (previousAttrs: rec {
           version = "0.9.1-dev.nix+${zig.shortRev}";
-          src = pkgs.fetchFromGitHub {
-            owner = "ziglang";
-            repo = "zig";
-            rev = zig.rev;
-            hash = zig.narHash;
-          };
-
+          src = zig;
           cmakeFlags = [
             # https://github.com/ziglang/zig/issues/12069
             "-DZIG_STATIC_ZLIB=on"
