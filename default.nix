@@ -4,5 +4,5 @@ let
   flake = builtins.getFlake (toString ./.);
 in
 {
-  zig = flake.packages.${builtins.currentSystem}.default;
+  zig = flake.packages.${builtins.currentSystem}.latest;
 }

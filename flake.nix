@@ -13,7 +13,7 @@
   outputs = { self, nixpkgs, flake-utils, zig }:
     flake-utils.lib.eachDefaultSystem (system:
     let pkgs = import nixpkgs { inherit system; }; in rec {
-      packages.default = packages.${pkgs.zig.version};
+      packages.default = packages.latest;
       packages.${pkgs.zig.version} = pkgs.zig;
 
       packages.latest =
